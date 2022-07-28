@@ -86,24 +86,33 @@ $("#sendData").click(function(){
     var distance = $(".leaflet-routing-alt h3").html();
     var km = distance.split(",");
     distance = km[0];
+    distance = distance.replace(/km/g, '');
+    distance = distance.replace(/m/g, '');
     var mapdata = JSON.stringify({
-        way1Lat:lat1,
-        way1lon:lon1,
-        way2lat:lat2,
-        way2lon:lon2,
-        Distance:distance
+        RouteID: 1,
+        RouteName: "Why not",
+        Photo: "Yes",
+        Distance:distance,
+        GPSxStart:lat1,
+        GPSxEnd:lon1,
+        GPSyStart:lon2,
+        GPSyEnd:lat2,
+        FK_AuthorID:2,
+        
     });
-    
+    console.log(mapdata);
     $.ajax({
         type: "POST",
-        url: "",
-        contentType: "application/json",
-        dataType: "json",
-        data: mapdata,
-        success: function (result) {
-         console.log(result);
-     }
-
+            data: {data:mapdata},
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            url: 'http://localhost:5026/Route/acceptRoute',                                                        
+            success: function (response) {     
+                console.log(response);                      
+            },
+            error: function (response) {
+                alert(errorThrown);                
+            }
     });
+    console.log("after");
 });
 </script>
