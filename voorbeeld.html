@@ -89,15 +89,15 @@ $("#sendData").click(function(){
     distance = distance.replace(/km/g, '');
     distance = distance.replace(/m/g, '');
     var mapdata = JSON.stringify({
-        RouteID: 1,
-        RouteName: "Why not",
+        ID: 1,
+        Name: "Why not",
         Photo: "Yes",
         Distance:distance,
         GPSxStart:lat1,
         GPSxEnd:lon1,
         GPSyStart:lon2,
         GPSyEnd:lat2,
-        FK_AuthorID:2,
+
         
     });
     console.log(mapdata);
@@ -105,7 +105,7 @@ $("#sendData").click(function(){
         type: "POST",
             data: {data:mapdata},
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            url: 'http://localhost:5026/Route/acceptRoute',                                                        
+            url: 'http://localhost:5234/Route/acceptRoute',                                                        
             success: function (response) {     
                 console.log(response);                      
             },
