@@ -1,28 +1,33 @@
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
-<script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
-<!-- end Leaflet map -->
-<span id="latitude">Latitude: ...</span>
-<span id="longtitude">Longtitude: ...</span>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+    <script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+    <link rel="stylesheet" href="map.css" />
+    <script src="bundle.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	
+    <!-- end Leaflet map -->
+</head>
 
-<span id="logsvf"></span>
-<div id="map" style="width: 100%; height: 80%;"></div>
+<body>
+<form id = "MapDataForm" action="http://localhost:5234/Route/Index" method="post">
+    <span id="logsvf"></span>
+    <div id="map" style="height:400px; width:900px;"></div>
+    <input type="text" id="Distance" name="Distance" value="" style="display:none"/>
+    <input type="text" id="GPSxStart" name="GPSxStart" value="" style="display:none"/>
+    <input type="text" id="GPSxEnd" name="GPSxEnd" value="" style="display:none"/>
+    <input type="text" id="GPSyStart" name="GPSyStart" value="" style="display:none"/>
+    <input type="text" id="GPSyEnd" name="GPSyEnd" value="" style="display:none"/>
+    <input type="button" id="sendData" value="Send data"/>
+</form>
 
-<input type="button" id="sendData" value="Send data"/>
-<style>
-    body {
-    padding: 0;
-    margin: 0;
-}
-html, body, #map {
-    height: 100%;
-    width: 50vw;
-}
-</style>
+<input type="button" id="TakePhoto" value="Take Screenshot" />
+</body>
 
 <script>
 var lat1 = 0;
@@ -32,54 +37,65 @@ var lon2 = 0;
 
 
 $(document).ready(function(){
-L.mapbox.accessToken = 'pk.eyJ1IjoiYXJlbGIiLCJhIjoiY2w1dXhhNDI4MDQ2dzNldDIzcHBpaGVncyJ9.yKM2McNilQkocrk0q89j7w';
-    
-var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    tileSize: 512,
-    zoomOffset: -1
-})
-
-var map = L.map('map')
-  .addLayer(tiles)
-.locate({setView: true, maxZoom: 9});
-
-map.on('locationfound', onLocationFound);
-map.on('click', onMapClick); 
-                     
-function onLocationFound(e) {
-L.Routing.control({
-    router: L.Routing.mapbox(L.mapbox.accessToken,{
-                    profile : 'mapbox/walking',
-                    language: 'en',
-                }),
-                waypoints: [
-                    L.latLng(e.latlng),
-                    L.latLng(e.latlng)
-                ],
-
-}).addTo(map)
-.on('waypointschanged', function (e) {
-
-    lat1 = e["waypoints"][0]["latLng"]["lat"];
-    lon1 = e["waypoints"][0]["latLng"]["lng"];
-    lat2 = e["waypoints"][1]["latLng"]["lat"];
-    lon2 = e["waypoints"][1]["latLng"]["lng"];
-    console.log("Waypoint 1 lat is " + lat1 + " latitude is: " + lon1);
-    console.log("Waypoint 2 lat is " + lat2 + " latitude is: " + lon2);
+    L.mapbox.accessToken = 'pk.eyJ1IjoiYXJlbGIiLCJhIjoiY2w1dXhhNDI4MDQ2dzNldDIzcHBpaGVncyJ9.yKM2McNilQkocrk0q89j7w';
+        
+    var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    })
    
+    var map = L.map('map')
+    .addLayer(tiles)
+    .locate({setView: true, maxZoom: 9});
 
-});
+    map.on('locationfound', onLocationFound);
+                        
+    function onLocationFound(e) {
+    L.Routing.control({
+        router: L.Routing.mapbox(L.mapbox.accessToken,{
+                        profile : 'mapbox/walking',
+                        language: 'en',
+                    }),
+                    waypoints: [
+                        L.latLng(e.latlng),
+                        L.latLng(e.latlng)
+                    ],
 
+    }).addTo(map)
+    .on('waypointschanged', function (e) {
+
+        lat1 = e["waypoints"][0]["latLng"]["lat"];
+        lon1 = e["waypoints"][0]["latLng"]["lng"];
+        lat2 = e["waypoints"][1]["latLng"]["lat"];
+        lon2 = e["waypoints"][1]["latLng"]["lng"];
+        console.log("Waypoint 1 lat is " + lat1 + " latitude is: " + lon1);
+        console.log("Waypoint 2 lat is " + lat2 + " latitude is: " + lon2);
+        });
+    }
+
+    var a3Size = {
+    width: 2339,
+    height: 3308,
+    className: 'a3CssClass',
+    tooltip: 'A custom A3 size'
 }
-map.on("click", function(e){
-})
 
-function onMapClick(e){
-}
+    var printer = L.easyPrint({
+      		tileLayer: tiles,
+      		sizeModes: ['custom'],
+      		filename: 'myMap',
+      		exportOnly: true,
+      		hideControlContainer: true
+		}).addTo(map);
+
+       $("#TakePhoto").click(function () {
+			printer.printMap('CurrentSize', 'MyManualPrint')
+		});
+
 
 });    
+
+
 
 $("#sendData").click(function(){
     //Collect Data
@@ -89,19 +105,24 @@ $("#sendData").click(function(){
     distance = distance.replace(/km/g, '');
     distance = distance.replace(/m/g, '');
     var mapdata = JSON.stringify({
-        ID: 1,
-        Name: "Why not",
         Photo: "Yes",
         Distance:distance,
         GPSxStart:lat1,
         GPSxEnd:lon1,
         GPSyStart:lon2,
         GPSyEnd:lat2,
-
-        
     });
-    console.log(mapdata);
-    $.ajax({
+
+    $("#Distance").val(distance);
+    $("#GPSxStart").val(lat1);
+    $("#GPSxEnd").val(lon1);
+    $("#GPSyStart").val(lon2);
+    $("#GPSyEnd").val(lat2);
+
+    var myForm = document.getElementById('MapDataForm');
+    myForm.submit();
+      
+    /*$.ajax({
         type: "POST",
             data: {data:mapdata},
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
@@ -113,6 +134,6 @@ $("#sendData").click(function(){
                 alert(errorThrown);                
             }
     });
-    console.log("after");
+    console.log("after");*/
 });
 </script>
